@@ -2,85 +2,186 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   RiStethoscopeLine,
-  RiStarFill, // Estrella rellena para el rating
-  RiStarLine
+  RiStarFill,
+  RiStarLine,
+  RiSearchLine,
+  RiMedalLine,
+  RiUserHeartLine,
+  RiTimerFlashLine,
+  RiMapPinLine
 } from "react-icons/ri";
 import { SkeletonGridCards } from "./components/Skeleton";
+import ChatShortcut from "./components/ChatShortcut";
 
 export default function Team() {
   const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeSpecialty, setActiveSpecialty] = useState("Todos");
+  
   const navigate = useNavigate();
+
+  // Especialidades para el filtro rápido
+  const specialties = ["Todos", "Cardiología", "Pediatría", "Dermatología", "Ginecología", "Medicina General"];
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_BACKEND}/doctors`)
+    fetch(`${import.meta.env.VITE_API_LOCAL}/doctors`)
       .then(res => res.json())
       .then(data => {
         setDoctors(data);
+        setFilteredDoctors(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
+  // Lógica de filtrado
+  useEffect(() => {
+    let result = doctors;
+
+    if (activeSpecialty !== "Todos") {
+      result = result.filter(doc => doc.specialty === activeSpecialty);
+    }
+
+    if (searchTerm) {
+      result = result.filter(doc =>
+        doc.profiles?.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredDoctors(result);
+  }, [searchTerm, activeSpecialty, doctors]);
+
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <RiStethoscopeLine size={24} />
-          Médicos disponibles
-        </h1>
+    <div className="bg-slate-50 min-h-screen pb-20">
+      <header className="bg-white border-b border-gray-200 py-12 mb-12">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight flex items-center justify-center gap-3">
+            <RiStethoscopeLine className="text-blue-600" />
+            Nuestro Equipo Médico
+          </h1>
+          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto font-medium">
+            Profesionales altamente calificados listos para brindarte la mejor atención personalizada y tecnológica.
+          </p>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {[
+            { t: "Certificados", d: "Especialistas avalados internacionalmente.", i: <RiMedalLine size={28}/> },
+            { t: "Empatía", d: "Atención centrada en el bienestar humano.", i: <RiUserHeartLine size={28}/> },
+            { t: "Disponibilidad", d: "Consulta con nuestro agente de IA y expertos cuando sea.", i: <RiTimerFlashLine size={28}/> },
+            { t: "Cercanía", d: "Consultorios equipados cerca de ti.", i: <RiMapPinLine size={28}/> }
+          ].map((item, idx) => (
+            <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group hover:shadow-md transition-all">
+              <div className="text-blue-600 mb-4 transform group-hover:scale-110 transition-transform">
+                {item.i}
+              </div>
+              <h3 className="font-bold text-gray-800">{item.t}</h3>
+              <p className="text-sm text-gray-500 mt-1 font-medium">{item.d}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="sticky top-4 z-10 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-gray-200 mb-10 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <div className="relative w-full md:w-96">
+            <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Buscar médico por nombre o especialidad..."
+              className="w-full pl-11 pr-4 py-2.5 rounded-xl border-none focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 transition-all font-medium"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar">
+            {specialties.map(spec => (
+              <button
+                key={spec}
+                onClick={() => setActiveSpecialty(spec)}
+                className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
+                  activeSpecialty === spec 
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-200" 
+                  : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                }`}
+              >
+                {spec}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {loading ? (
           <SkeletonGridCards />
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {doctors.map((doc) => (
-              <div
-                key={doc.id}
-                onClick={() => navigate(`/doctors/${doc.id}`)}
-                className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl cursor-pointer transition border border-transparent hover:border-blue-100"
-              >
-                {/* Avatar */}
-                <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                  {doc.profiles?.full_name?.charAt(0) || "D"}
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredDoctors.length > 0 ? (
+              filteredDoctors.map((doc) => (
+                <div
+                  key={doc.id}
+                  onClick={() => navigate(`/doctors/${doc.id}`)}
+                  className="bg-white rounded-2xl border border-gray-200 hover:shadow-xl transition-all flex flex-col overflow-hidden group cursor-pointer"
+                >
+                  <div className="p-6 flex-grow">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl font-black group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                        {doc.profiles?.full_name?.charAt(0) || "D"}
+                      </div>
+                      <div className="flex items-center gap-1 bg-yellow-50 px-2.5 py-1 rounded-lg">
+                        <RiStarFill className="text-yellow-500" size={14} />
+                        <span className="text-xs font-black text-yellow-700">
+                          {doc.avg_rating ? doc.avg_rating.toFixed(1) : "5.0"}
+                        </span>
+                      </div>
+                    </div>
 
-                <h2 className="mt-4 font-bold text-lg">
-                  {doc.profiles?.full_name}
-                </h2>
-
-                <p className="text-blue-600 text-sm font-medium">
-                  {doc.specialty}
-                </p>
-
-                <p className="text-gray-500 text-sm mt-1 line-clamp-2">
-                  {doc.bio}
-                </p>
-
-                {/* Footer con Rating */}
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
-                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    {doc.experience}
-                  </span>
-
-                  <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-lg">
-                    {/* Si el doctor tiene rating mostramos estrella llena, si no, vacía */}
-                    {doc.avg_rating > 0 ? (
-                        <RiStarFill className="text-yellow-500" size={16} />
-                    ) : (
-                        <RiStarLine className="text-gray-300" size={16} />
-                    )}
-                    <span className={`text-sm font-bold ${doc.avg_rating > 0 ? 'text-yellow-700' : 'text-gray-400'}`}>
-                      {doc.avg_rating ? doc.avg_rating.toFixed(1) : "N/C"}
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      {doc.profiles?.full_name}
+                    </h3>
+                    <span className="text-[10px] uppercase tracking-widest font-black text-blue-500 mb-3 block">
+                      {doc.specialty}
                     </span>
+                    
+                    <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2 font-medium">
+                      {doc.bio || "Especialista comprometido con la salud y el bienestar de sus pacientes."}
+                    </p>
+
+                    <div className="space-y-2 pt-2 border-t border-gray-50">
+                      <div className="flex items-center text-xs text-gray-600 font-bold">
+                        <RiMedalLine className="w-4 h-4 mr-2 text-blue-400" />
+                        <span>{doc.experience || "10+ años de experiencia"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-gray-50 border-t border-gray-100 mt-auto">
+                    <button className="w-full bg-white border-2 border-blue-600 text-blue-600 py-2 rounded-xl text-sm font-black hover:bg-blue-600 hover:text-white transition-all transform active:scale-95">
+                      Ver Perfil Médico
+                    </button>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-gray-200">
+                <RiSearchLine size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-400 text-lg font-bold">No encontramos médicos en esta categoría.</p>
+                <button 
+                  onClick={() => {setActiveSpecialty("Todos"); setSearchTerm("");}}
+                  className="mt-4 text-blue-600 font-bold hover:underline"
+                >
+                  Limpiar filtros
+                </button>
               </div>
-            ))}
+            )}
           </div>
         )}
-      </div>
+      </main>
+
+      <ChatShortcut />
     </div>
   );
 }

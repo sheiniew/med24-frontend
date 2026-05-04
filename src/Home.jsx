@@ -29,8 +29,8 @@ export default function Home() {
     },
     {
       icon: LuClock,
-      title: "Disponible Sin Conexión",
-      description: "La página estará habilitada en todo momento incluso sin conexión",
+      title: "Disponible 24/7",
+      description: "La página estará habilitada en todo momento que tengas conexión",
     },
   ];
 

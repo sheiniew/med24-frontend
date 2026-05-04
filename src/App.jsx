@@ -17,6 +17,7 @@ import Team from "./Team"
 import DoctorDetail from "./DoctorDetail";
 import Favorites from "./Favorites";
 import Services from "./Services";
+import MedicalGuideDetail from "./components/MedicalGuideDetail";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="/services" element={<Services/>}/>
           <Route path="/doctors/:id" element={<DoctorDetail />} />
           <Route path="/guides" element={<MedicalGuides />} />
+          <Route path="/guide-detail/:id" element={<MedicalGuideDetail/>}/>
           <Route
             path="/chat"
             element={

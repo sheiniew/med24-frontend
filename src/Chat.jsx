@@ -36,8 +36,6 @@ export default function Chat() {
       setInitialLoading(false);
       return;
     }
-
-    // 🔥 si es chat nuevo, NO hacer fetch (ya tienes los mensajes en estado)
     if (isNewChat) {
       setIsNewChat(false);
       setInitialLoading(false);
@@ -47,7 +45,7 @@ export default function Chat() {
     setMessages([]);
     setInitialLoading(true);
 
-    fetch(`${import.meta.env.VITE_API_BACKEND}/chat/${chatId}/messages`, {
+    fetch(`${import.meta.env.VITE_API_LOCAL}/chat/${chatId}/messages`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -66,7 +64,7 @@ export default function Chat() {
   }, [messages]);
 
   const createChat = async (firstMessage) => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/chat/create`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/chat/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -89,7 +87,7 @@ export default function Chat() {
     if (!currentChatId) {
       currentChatId = await createChat(text);
 
-      setIsNewChat(true); // 🔥 importante
+      setIsNewChat(true);
 
       await refreshChats();
       navigate(`/chat/${currentChatId}`, { replace: true });
@@ -111,7 +109,7 @@ export default function Chat() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BACKEND}/chat/${currentChatId}/message`,
+        `${import.meta.env.VITE_API_LOCAL}/chat/${currentChatId}/message`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -160,10 +158,9 @@ export default function Chat() {
   };
 
   return (
-    <div className="h-full flex justify-center px-4 py-6 bg-[#f4f6fb]">
+    <div className="h-full flex justify-center px-4 py-6">
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col h-full">
 
-        {/* HEADER */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
           <div className="flex items-center gap-4">
             <button
@@ -187,7 +184,6 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* MENSAJES */}
         <div
           ref={chatRef}
           className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50"

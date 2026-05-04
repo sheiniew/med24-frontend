@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { LuX, LuSave, LuPlus } from "react-icons/lu";
+import { Input, Textarea, DynamicSection } from "./components/Utils";
+import NavBack from "./components/NavBack";
 
-export default function CreateGuide() {
+export default function CreateGuide({ editingGuide, closeModal, setGuides }) {
+  const isEditing = !!editingGuide;
+
   const [form, setForm] = useState({
     title: "",
     category: "",
@@ -15,178 +20,144 @@ export default function CreateGuide() {
     prevention: [""],
   });
 
+  useEffect(() => {
+    if (isEditing) {
+      setForm({
+        title: editingGuide.title || "",
+        category: editingGuide.category || "",
+        urgency: editingGuide.urgency || "",
+        description: editingGuide.description || "",
+      });
+      if (editingGuide.content) {
+        setContent(editingGuide.content);
+      }
+    }
+  }, [editingGuide]);
+
   const handleArrayChange = (section, index, value) => {
     const updated = [...content[section]];
     updated[index] = value;
-
-    setContent({
-      ...content,
-      [section]: updated,
-    });
+    setContent({ ...content, [section]: updated });
   };
 
   const addItem = (section) => {
-    setContent({
-      ...content,
-      [section]: [...content[section], ""],
-    });
+    setContent({ ...content, [section]: [...content[section], ""] });
   };
 
   const removeItem = (section, index) => {
     const updated = content[section].filter((_, i) => i !== index);
-
-    setContent({
-      ...content,
-      [section]: updated,
-    });
+    setContent({ ...content, [section]: updated });
   };
 
   const handleSubmit = async () => {
-    const finalData = {
-      ...form,
-      content,
-    };
+    const finalData = { ...form, content };
+    const url = isEditing
+      ? `${import.meta.env.VITE_API_LOCAL}/doctors/guides/${editingGuide.id}`
+      : `${import.meta.env.VITE_API_LOCAL}/doctors/guides`;
 
-    console.log(finalData);
+    const method = isEditing ? "PUT" : "POST";
 
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/guides`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(finalData),
-    });
+    try {
+      const res = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(finalData),
+      });
 
-    alert("Guía creada");
+      if (res.ok) {
+        const savedGuide = await res.json();
+
+        if (isEditing) {
+          setGuides(prev => prev.map(g => g.id === editingGuide.id ? { ...g, ...finalData } : g));
+          closeModal();
+        } else {
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      console.error("Error al guardar:", error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex justify-center py-10 px-6">
-      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-sm p-8 space-y-8">
+    <div className="bg-slate-50">
+      {!isEditing && (
+        <NavBack />
+      )} 
+      <div className={`${!isEditing ? 'min-h-screen py-10 px-6 flex justify-center' : 'p-8'}`}>
+        <div className={`w-full ${!isEditing ? 'max-w-3xl bg-white rounded-[2.5rem] shadow-sm p-10' : ''} space-y-8`}>
 
-        <h2 className="text-2xl font-bold text-gray-900">
-          Crear guía médica
-        </h2>
 
-        {/* DATOS GENERALES */}
-        <div className="space-y-4">
-          <Input label="Título" onChange={(e) => setForm({ ...form, title: e.target.value })} />
-          <Input label="Categoría" onChange={(e) => setForm({ ...form, category: e.target.value })} />
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-black text-slate-900 italic">
+              {isEditing ? "Editar Guía Médica" : "Crear Nueva Guía"}
+            </h2>
+            {isEditing && (
+              <button onClick={closeModal} className="p-2 bg-slate-100 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-all">
+                <LuX size={24} />
+              </button>
+            )}
+          </div>
 
-          <select
-            onChange={(e) => setForm({ ...form, urgency: e.target.value })}
-            className="input"
-          >
-            <option value="">Urgencia</option>
-            <option value="low">Baja</option>
-            <option value="medium">Media</option>
-            <option value="high">Alta</option>
-          </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input
+              label="Título de la guía"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
+            />
+            <Input
+              label="Categoría (Ej: Pediatría)"
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+            />
 
-          <Textarea label="Descripción" onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] uppercase tracking-widest font-black text-slate-400 ml-2">Nivel de Urgencia</label>
+              <select
+                value={form.urgency}
+                onChange={(e) => setForm({ ...form, urgency: e.target.value })}
+                className="w-full bg-slate-50 border-none rounded-2xl py-3 px-4 font-bold text-slate-600 focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="">Seleccionar...</option>
+                <option value="low">Baja</option>
+                <option value="medium">Media</option>
+                <option value="high">Alta</option>
+              </select>
+            </div>
+          </div>
 
-        {/* SECCIONES DINÁMICAS */}
-        <DynamicSection
-          title="Síntomas"
-          section="symptoms"
-          content={content}
-          onChange={handleArrayChange}
-          addItem={addItem}
-          removeItem={removeItem}
-        />
-
-        <DynamicSection
-          title="Cuidados en casa"
-          section="homeCare"
-          content={content}
-          onChange={handleArrayChange}
-          addItem={addItem}
-          removeItem={removeItem}
-        />
-
-        <DynamicSection
-          title="Cuándo acudir al médico"
-          section="whenToSeeDoctor"
-          content={content}
-          onChange={handleArrayChange}
-          addItem={addItem}
-          removeItem={removeItem}
-        />
-
-        <DynamicSection
-          title="Prevención"
-          section="prevention"
-          content={content}
-          onChange={handleArrayChange}
-          addItem={addItem}
-          removeItem={removeItem}
-        />
-
-        {/* BOTÓN */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700"
-          >
-            Guardar guía
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* COMPONENTES */
-
-function DynamicSection({ title, section, content, onChange, addItem, removeItem }) {
-  return (
-    <div className="space-y-3">
-      <h3 className="font-semibold text-gray-800">{title}</h3>
-
-      {content[section].map((item, index) => (
-        <div key={index} className="flex gap-2">
-          <input
-            value={item}
-            onChange={(e) => onChange(section, index, e.target.value)}
-            className="flex-1 border border-gray-200 rounded-xl px-4 py-2"
-            placeholder={`Agregar ${title.toLowerCase()}`}
+          <Textarea
+            label="Resumen / Descripción corta"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
 
-          <button
-            onClick={() => removeItem(section, index)}
-            className="text-red-500 px-3"
-          >
-            ✕
-          </button>
+          <div className="space-y-6 border-t border-slate-100 pt-8">
+            {["symptoms", "homeCare", "whenToSeeDoctor", "prevention"].map((sec) => (
+              <DynamicSection
+                key={sec}
+                title={sec === "symptoms" ? "Síntomas" : sec === "homeCare" ? "Cuidados en Casa" : sec === "prevention" ? "Prevención" : "Cuándo acudir al médico"}
+                section={sec}
+                content={content}
+                onChange={handleArrayChange}
+                addItem={addItem}
+                removeItem={removeItem}
+              />
+            ))}
+          </div>
+
+          <div className="flex justify-end pt-6">
+            <button
+              onClick={handleSubmit}
+              className="flex items-center gap-2 bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all transform active:scale-95"
+            >
+              <LuSave size={20} />
+              {isEditing ? "Guardar Cambios" : "Publicar Guía"}
+            </button>
+          </div>
         </div>
-      ))}
-
-      <button
-        onClick={() => addItem(section)}
-        className="text-blue-600 text-sm"
-      >
-        + Añadir
-      </button>
-    </div>
-  );
-}
-
-function Input({ label, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-600">{label}</label>
-      <input {...props} className="border border-gray-200 rounded-xl px-4 py-3" />
-    </div>
-  );
-}
-
-function Textarea({ label, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-600">{label}</label>
-      <textarea {...props} rows={3} className="border border-gray-200 rounded-xl px-4 py-3" />
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { LuSearch, LuBot, LuMonitor, LuUserCheck, LuClock, LuShield, LuActivity, LuMicroscope, LuBrain, LuHeart, LuBaby, LuStethoscope, LuLink } from 'react-icons/lu'
 import { Link } from 'react-router-dom';
+import ChatShortcut from './components/ChatShortcut';
 
 const Services = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +24,6 @@ const Services = () => {
         { id: 12, name: "Oftalmología", category: "Especialidades", desc: "Examen visual completo y cirugía correctiva de alta precisión.", modality: "Presencial", availability: "48 horas", icon: <LuActivity className="text-blue-400" /> },
     ];
 
-    // Filtro optimizado
     const filteredServices = useMemo(() => {
         return services.filter(s => {
             const matchesSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -34,7 +34,6 @@ const Services = () => {
 
     return (
         <div className="bg-slate-50 min-h-screen pb-20">
-            {/* Header & Hero simple */}
             <header className="bg-white border-b border-gray-200 py-10 mb-12">
                 <div className="max-w-7xl mx-auto px-4 text-center">
                     <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">Catálogo Médico MED 24</h1>
@@ -45,7 +44,6 @@ const Services = () => {
             </header>
 
             <main className="max-w-7xl mx-auto px-4">
-                {/* Sección: ¿Por qué elegirnos? */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                     {[
                         { t: "IA 24/7", d: "Orientación médica inmediata sin esperas.", i: <LuBot /> },
@@ -63,7 +61,6 @@ const Services = () => {
                     ))}
                 </div>
 
-                {/* Buscador y Filtros */}
                 <div className="sticky top-4 z-10 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-gray-200 mb-10 flex flex-col md:flex-row gap-4 justify-between items-center">
                     <div className="relative w-full md:w-96">
                         <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -88,7 +85,6 @@ const Services = () => {
                     </div>
                 </div>
 
-                {/* Listado de Servicios */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredServices.length > 0 ? (
                         filteredServices.map(service => (
@@ -127,19 +123,7 @@ const Services = () => {
                 </div>
             </main>
 
-            <Link to="/chat">
-                <div className="fixed bottom-8 right-8 z-50">
-                    <button className="group flex items-center bg-blue-600 text-white p-1 pr-6 rounded-full shadow-2xl hover:bg-blue-700 transition-all active:scale-95">
-                        <div className="bg-white text-blue-600 p-3 rounded-full shadow-inner mr-3 transform group-hover:rotate-12 transition-transform">
-                            <LuBot className="w-6 h-6" />
-                        </div>
-                        <div className="text-left">
-                            <span className="block text-[10px] uppercase font-bold opacity-80">Asistente Médico IA</span>
-                            <span className="text-sm font-bold">Orientación 24/7</span>
-                        </div>
-                    </button>
-                </div>
-            </Link>
+            <ChatShortcut/>
         </div>
     );
 };

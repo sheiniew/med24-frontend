@@ -3,16 +3,12 @@
 export function SkeletonCard() {
   return (
     <div className="bg-white rounded-3xl p-6 shadow-sm">
-      {/* Avatar skeleton */}
       <div className="w-14 h-14 bg-gray-200 rounded-xl animate-pulse"></div>
 
-      {/* Title skeleton */}
       <div className="mt-4 h-6 w-3/4 bg-gray-200 rounded-lg animate-pulse"></div>
 
-      {/* Specialty skeleton */}
       <div className="mt-3 h-4 w-1/2 bg-gray-100 rounded-lg animate-pulse"></div>
 
-      {/* Bio skeleton */}
       <div className="mt-4 space-y-2">
         <div className="h-3 w-full bg-gray-100 rounded-lg animate-pulse"></div>
         <div className="h-3 w-5/6 bg-gray-100 rounded-lg animate-pulse"></div>
@@ -26,6 +22,19 @@ export function SkeletonCard() {
     </div>
   );
 }
+
+export const SkeletonFavoriteItem = () => (
+        <div className="bg-white rounded-2xl p-5 border border-slate-100 flex items-center justify-between animate-pulse">
+            <div className="flex items-center gap-4">
+                <div className="bg-slate-200 w-12 h-12 rounded-xl" />
+                <div className="space-y-2">
+                    <div className="h-4 bg-slate-200 rounded-md w-48" />
+                    <div className="h-3 bg-slate-100 rounded-md w-20" />
+                </div>
+            </div>
+            <div className="w-9 h-9 bg-slate-100 rounded-xl" />
+        </div>
+    );
 
 export function SkeletonDoctorDetail() {
   return (
@@ -157,6 +166,70 @@ export function SkeletonChatSidebar() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+export function SkeletonMedicalGuideDetail() {
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <nav className="bg-white border-b border-slate-200 h-16 sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto px-4 h-full flex items-center justify-between">
+          <div className="h-4 w-24 bg-slate-200 rounded-lg animate-pulse"></div>
+          <div className="flex gap-2">
+            <div className="h-8 w-8 bg-slate-100 rounded-full animate-pulse"></div>
+            <div className="h-8 w-8 bg-slate-100 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-5xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          <aside className="hidden lg:block lg:col-span-4 space-y-6">
+            <div className="bg-white p-6 rounded-3xl border border-slate-100 space-y-4">
+              <div className="h-5 w-1/2 bg-slate-200 rounded-lg animate-pulse mb-4"></div>
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="h-8 w-8 bg-slate-100 rounded-xl animate-pulse"></div>
+                  <div className="h-4 w-full bg-slate-50 rounded-lg animate-pulse"></div>
+                </div>
+              ))}
+              <div className="pt-6 border-t border-slate-50 mt-4">
+                <div className="h-16 w-full bg-slate-50 rounded-2xl animate-pulse"></div>
+              </div>
+            </div>
+          </aside>
+
+          <article className="lg:col-span-8 space-y-10">
+            <header className="space-y-4">
+              <div className="h-6 w-32 bg-blue-50 rounded-full animate-pulse"></div>
+              <div className="h-12 w-3/4 bg-slate-200 rounded-xl animate-pulse"></div>
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-slate-100 rounded-lg animate-pulse"></div>
+                <div className="h-4 w-5/6 bg-slate-100 rounded-lg animate-pulse"></div>
+              </div>
+            </header>
+
+            <hr className="border-slate-200" />
+
+            <div className="space-y-12">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 bg-slate-200 rounded-2xl animate-pulse"></div>
+                    <div className="h-6 w-48 bg-slate-200 rounded-lg animate-pulse"></div>
+                  </div>
+                  <div className="grid gap-4">
+                    <div className="h-20 w-full bg-white border border-slate-100 rounded-2xl animate-pulse shadow-sm"></div>
+                    <div className="h-20 w-full bg-white border border-slate-100 rounded-2xl animate-pulse shadow-sm"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+      </main>
     </div>
   );
 }

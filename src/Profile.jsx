@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuTrash } from "react-icons/lu";
+import DoctorPersonalGuides from "./components/DoctorPersonalGuides";
+import { Textarea, Input } from "./components/Utils";
+import { LuUser, LuStethoscope, LuShield, LuHeart, LuPhone, LuPlus, LuSave, LuMedal, LuCircleCheck } from "react-icons/lu";
 
 export default function Profile() {
   const [profile, setProfile] = useState({});
@@ -13,9 +16,8 @@ export default function Profile() {
 
   const navigate = useNavigate();
 
-  // 🔹 cargar perfil
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BACKEND}/auth/profile`, {
+    fetch(`${import.meta.env.VITE_API_LOCAL}/auth/profile`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -26,7 +28,7 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BACKEND}/auth/me`, {
+    fetch(`${import.meta.env.VITE_API_LOCAL}/auth/me`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -35,14 +37,14 @@ export default function Profile() {
           setIsDoctor(true);
           setView("doctor");
 
-          const resDoctor = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/me`, {
+          const resDoctor = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/me`, {
             credentials: "include",
           });
 
           const doctor = await resDoctor.json();
           setDoctorData(doctor);
 
-          const resGuides = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/doctor/${doctor.id}`);
+          const resGuides = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/doctor/${doctor.id}`);
           const guidesData = await resGuides.json();
 
           setGuides(guidesData || []);
@@ -53,7 +55,6 @@ export default function Profile() {
       });
   }, []);
 
-  // 🔹 handlers
   const handleChange = (e) => {
     setProfile({
       ...profile,
@@ -68,26 +69,10 @@ export default function Profile() {
     });
   };
 
-  const handleDeleteGuide = async (id) => {
-    const confirmDelete = window.confirm("¿Eliminar esta guía?");
-    if (!confirmDelete) return;
-
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/guides/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-
-    if (res.ok) {
-      setGuides(prev => prev.filter(g => g.id !== id));
-    } else {
-      alert("Error al eliminar guía");
-    }
-  };
-
   const handleSave = async () => {
     setLoading(true);
 
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/profile`, {
+    await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/profile`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -98,7 +83,7 @@ export default function Profile() {
   };
 
   const handleSaveDoctor = async () => {
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/me`, {
+    await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/me`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -112,7 +97,6 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-gray-50 px-6 py-10 flex justify-center">
         <div className="w-full max-w-4xl">
-          {/* Header skeleton */}
           <div className="bg-white rounded-3xl shadow-sm p-6 flex items-center gap-6 mb-8">
             <div className="w-16 h-16 rounded-2xl bg-gray-200 animate-pulse"></div>
             <div className="flex-1">
@@ -121,7 +105,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Content skeleton */}
           <div className="space-y-8">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="bg-white rounded-3xl shadow-sm p-6">
@@ -140,202 +123,179 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10 flex justify-center">
-      <div className="w-full max-w-4xl space-y-8">
+    <div className="min-h-screen bg-slate-50 px-4 py-12 flex justify-center">
+      <div className="w-full max-w-5xl space-y-8">
 
-        {/* HEADER */}
-        <div className="bg-white rounded-3xl shadow-sm p-6 flex items-center gap-6">
-          <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold">
+        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 rounded-bl-full opacity-40 -z-0" />
+
+          <div className="w-24 h-24 rounded-3xl bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold shadow-xl shadow-blue-100 z-10 shrink-0">
             {profile.full_name?.charAt(0) || "U"}
           </div>
 
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              {profile.full_name || "Tu nombre"}
+          <div className="text-center md:text-left z-10">
+            <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
+              {profile.full_name || "Tu Perfil"}
             </h2>
-            <p className="text-gray-500">{profile.email}</p>
+            <p className="text-slate-500 font-medium">{profile.email}</p>
+            {isDoctor && (
+              <span className="mt-2 inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-[10px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full border border-green-100">
+                <LuCircleCheck size={12} /> Profesional Verificado
+              </span>
+            )}
           </div>
         </div>
 
-        {/* TOGGLE SOLO PARA DOCTORES */}
         {isDoctor && (
-          <div className="flex gap-2">
+          <div className="flex bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100 w-fit">
             <button
               onClick={() => setView("profile")}
-              className={`px-4 py-2 rounded-xl ${view === "profile" ? "bg-blue-600 text-white" : "bg-gray-200"
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all ${view === "profile"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-100"
+                : "text-slate-500 hover:bg-slate-50"
                 }`}
             >
-              Perfil
+              <LuUser size={18} /> Mi Perfil
             </button>
-
             <button
               onClick={() => setView("doctor")}
-              className={`px-4 py-2 rounded-xl ${view === "doctor" ? "bg-blue-600 text-white" : "bg-gray-200"
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all ${view === "doctor"
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-100"
+                : "text-slate-500 hover:bg-slate-50"
                 }`}
             >
-              Panel médico
+              <LuStethoscope size={18} /> Panel Médico
             </button>
           </div>
         )}
 
-        {/* 👤 PERFIL */}
         {view === "profile" && (
-          <>
-            {/* INFO PERSONAL */}
-            <div className="bg-white rounded-3xl shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Información personal
-              </h3>
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-              <div className="grid grid-cols-2 gap-4">
+            <section className="bg-white rounded-[2rem] border border-slate-100 p-8">
+              <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2  uppercase tracking-tighter">
+                <LuUser className="text-blue-600" /> Información Personal
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input label="Nombre completo" name="full_name" value={profile.full_name || ""} onChange={handleChange} />
-                <Input label="Teléfono" name="phone" value={profile.phone || ""} onChange={handleChange} />
+                <Input label="Teléfono móvil" name="phone" value={profile.phone || ""} onChange={handleChange} />
                 <Input label="Fecha de nacimiento" name="birth_date" type="date" value={profile.birth_date || ""} onChange={handleChange} />
-
-                <select
-                  name="gender"
-                  value={profile.gender || ""}
-                  onChange={handleChange}
-                  className="border rounded-xl px-4 py-3"
-                >
-                  <option value="">Género</option>
-                  <option value="male">Masculino</option>
-                  <option value="female">Femenino</option>
-                  <option value="other">Otro</option>
-                </select>
+                <div className="flex flex-col gap-2">
+                  <label className="text-[10px] uppercase tracking-widest font-semibold text-slate-400 ml-2">Género</label>
+                  <select
+                    name="gender"
+                    value={profile.gender || ""}
+                    onChange={handleChange}
+                    className="w-full bg-slate-50 border-none rounded-2xl py-3 px-4 font-bold text-slate-600 focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="male">Masculino</option>
+                    <option value="female">Femenino</option>
+                    <option value="other">Otro</option>
+                  </select>
+                </div>
               </div>
-            </div>
+            </section>
 
-            {/* INFO MÉDICA */}
-            <div className="bg-white rounded-3xl shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Información médica
+            <section className="bg-white rounded-[2rem] border border-slate-100 p-8">
+              <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2  uppercase tracking-tighter">
+                <LuHeart className="text-rose-500" /> Historial Clínico
               </h3>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input label="Grupo sanguíneo" name="blood_type" value={profile.blood_type || ""} onChange={handleChange} />
                 <Textarea label="Alergias" name="allergies" value={profile.allergies || ""} onChange={handleChange} />
                 <Textarea label="Enfermedades crónicas" name="chronic_conditions" value={profile.chronic_conditions || ""} onChange={handleChange} />
                 <Textarea label="Medicamentos actuales" name="medications" value={profile.medications || ""} onChange={handleChange} />
               </div>
-            </div>
+            </section>
 
-            {/* EMERGENCIA */}
-            <div className="bg-white rounded-3xl shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Contacto de emergencia
+            <section className="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-md shadow-rose-50/50">
+              <h3 className="text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2  uppercase tracking-tighter">
+                <LuPhone className="text-blue-600" /> Contacto de Emergencia
               </h3>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Nombre" name="emergency_contact_name" value={profile.emergency_contact_name || ""} onChange={handleChange} />
-                <Input label="Teléfono" name="emergency_contact_phone" value={profile.emergency_contact_phone || ""} onChange={handleChange} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input label="Nombre del contacto" name="emergency_contact_name" value={profile.emergency_contact_name || ""} onChange={handleChange} />
+                <Input label="Teléfono de emergencia" name="emergency_contact_phone" value={profile.emergency_contact_phone || ""} onChange={handleChange} />
               </div>
-            </div>
+            </section>
 
-            {/* BOTÓN */}
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-4">
               <button
                 onClick={handleSave}
-                className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold"
+                className="flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-2xl font-semibold hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all active:scale-95"
               >
-                {loading ? "Guardando..." : "Guardar cambios"}
+                <LuSave size={20} />
+                {loading ? "Sincronizando..." : "Actualizar Perfil"}
               </button>
             </div>
 
-            {/* CONVERTIRSE EN MÉDICO */}
             {!isDoctor && (
-              <div className="bg-white rounded-3xl shadow-sm p-6 space-y-4">
-                <h3 className="text-lg font-semibold">¿Eres médico?</h3>
+              <div className="bg-blue-900 rounded-[2rem] p-8 text-white flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="text-center md:text-left">
+                  <h3 className="text-xl font-semibold">¿Eres profesional de la salud?</h3>
+                  <p className="text-blue-200 font-medium">Únete a nuestra red y comparte tus conocimientos médicos.</p>
+                </div>
                 <button
                   onClick={() => navigate("/become-doctor")}
-                  className="bg-green-600 text-white px-4 py-2 rounded-xl"
+                  className="bg-white text-blue-900 px-8 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all shrink-0"
                 >
-                  Convertirme en médico
+                  Solicitar Acceso Médico
                 </button>
               </div>
             )}
-          </>
+          </div>
         )}
 
-        {/* 🩺 PANEL MÉDICO */}
         {isDoctor && view === "doctor" && (
-          <div className="space-y-6">
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-            {/* 🩺 INFO DOCTOR */}
-            <div className="bg-white rounded-3xl shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-blue-600">
-                Panel de Médico
+            <section className="bg-white rounded-[2rem] border border-slate-100 p-8">
+              <h3 className="text-lg font-semibold text-blue-600 mb-6 flex items-center gap-2 uppercase tracking-tighter">
+                <LuMedal /> Credenciales Médicas
               </h3>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Input label="Especialidad" name="specialty" value={doctorData.specialty || ""} onChange={handleDoctorChange} />
-                <Input label="Experiencia" name="experience" value={doctorData.experience || ""} onChange={handleDoctorChange} />
-                <Input label="Certificación" name="certification" value={doctorData.certification || ""} onChange={handleDoctorChange} />
-                <Input label="Colegiado" name="colegiado" value={doctorData.colegiado || ""} onChange={handleDoctorChange} />
-                <Textarea label="Biografía" name="bio" value={doctorData.bio || ""} onChange={handleDoctorChange} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input label="Especialidad Principal" name="specialty" value={doctorData.specialty || ""} onChange={handleDoctorChange} />
+                <Input label="Años de Experiencia" name="experience" value={doctorData.experience || ""} onChange={handleDoctorChange} />
+                <Input label="Certificación Médica" name="certification" value={doctorData.certification || ""} onChange={handleDoctorChange} />
+                <Input label="Nº de Colegiado" name="colegiado" value={doctorData.colegiado || ""} onChange={handleDoctorChange} />
+                <div className="md:col-span-2">
+                  <Textarea label="Biografía Profesional" name="bio" value={doctorData.bio || ""} onChange={handleDoctorChange} />
+                </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 mt-8 border-t border-slate-50 pt-8">
                 <button
                   onClick={handleSaveDoctor}
-                  className="bg-green-600 text-white px-4 py-2 rounded-xl"
+                  className="bg-white text-black px-6 py-3 rounded-xl font-semibold border transition-all"
                 >
-                  Guardar info médica
+                  Guardar Info Médica
                 </button>
-
                 <button
                   onClick={() => navigate("/create-guide")}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-xl"
+                  className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 shadow-lg shadow-blue-50 transition-all"
                 >
-                  Crear guía médica
+                  <LuPlus size={20} /> Publicar Nueva Guía
                 </button>
               </div>
-            </div>
+            </section>
 
-            {/* 📚 MIS GUÍAS */}
-            <div className="bg-white rounded-3xl shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Mis guías médicas
+            <section className="bg-white rounded-[2rem] border border-slate-100 p-8">
+              <h3 className="text-xl font-semibold text-slate-900 mb-8 flex items-center gap-3">
+                <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center">
+                  <LuShield size={20} />
+                </div>
+                Mis Guías Publicadas
               </h3>
 
               {guides.length === 0 ? (
-                <p className="text-gray-500 text-sm">
-                  Aún no has creado ninguna guía.
-                </p>
-              ) : (
-                <div className="grid md:grid-cols-2 gap-4">
-                  {guides.map((guide) => (
-                    <div
-                      key={guide.id}
-                      className="border rounded-2xl p-4 flex flex-col justify-between"
-                    >
-                      <div>
-                        <h4 className="font-bold text-gray-900">
-                          {guide.title}
-                        </h4>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {guide.description}
-                        </p>
-
-                        <span className="text-xs mt-2 inline-block bg-gray-100 px-2 py-1 rounded">
-                          {guide.category}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between items-center mt-4">
-                        <button
-                          onClick={() => handleDeleteGuide(guide.id)}
-                          className="text-red-500 text-sm hover:text-red-700"
-                        >
-                          <LuTrash />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                <div className="text-center py-12 bg-slate-50 rounded-[1.5rem] border-2 border-dashed border-slate-200">
+                  <LuStethoscope className="mx-auto text-slate-300 mb-2" size={40} />
+                  <p className="text-slate-500 font-bold">Aún no has compartido ninguna guía médica.</p>
                 </div>
+              ) : (
+                <DoctorPersonalGuides guides={guides} setGuides={setGuides} />
               )}
-            </div>
-
+            </section>
           </div>
         )}
       </div>
@@ -343,22 +303,3 @@ export default function Profile() {
   );
 }
 
-/* COMPONENTES */
-
-function Input({ label, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-600">{label}</label>
-      <input {...props} className="border rounded-xl px-4 py-3" />
-    </div>
-  );
-}
-
-function Textarea({ label, ...props }) {
-  return (
-    <div className="col-span-2 flex flex-col gap-1">
-      <label className="text-sm text-gray-600">{label}</label>
-      <textarea {...props} rows={3} className="border rounded-xl px-4 py-3" />
-    </div>
-  );
-}

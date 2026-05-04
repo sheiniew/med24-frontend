@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RiMailLine, RiLockPasswordLine, RiUser3Line, RiCheckboxCircleLine } from "react-icons/ri"; // Agregué un icono de éxito
+import { RiMailLine, RiLockPasswordLine, RiUser3Line, RiCheckboxCircleLine, RiPulseLine } from "react-icons/ri";
 import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
@@ -9,7 +9,7 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [isRegistered, setIsRegistered] = useState(false); // <--- Nuevo estado
+    const [isRegistered, setIsRegistered] = useState(false);
 
     const { register } = useAuth();
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ export default function Register() {
         setLoading(true);
         try {
             await register(email, password);
-            setIsRegistered(true); // <--- Activamos el mensaje de éxito
+            setIsRegistered(true);
         } catch (err) {
             setError("Error al registrar: " + (err.message || "Inténtalo de nuevo"));
         } finally {
@@ -34,7 +34,6 @@ export default function Register() {
         }
     };
 
-    // Si el registro fue exitoso, mostramos este "View" en lugar del formulario
     if (isRegistered) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#f4f6fb] px-4">
@@ -60,7 +59,20 @@ export default function Register() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f4f6fb] px-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#f4f6fb] px-4">
+
+            <div className="flex flex-col items-center mb-10 text-center">
+                <div className="bg-[#1d4ed8] text-white p-4 rounded-3xl flex items-center justify-center shadow-lg mb-6">
+                    <RiPulseLine size={40} />
+                </div>
+                <h1 className="text-4xl font-extrabold text-gray-950 tracking-tighter mb-2">
+                    Registrate en MED 24
+                </h1>
+                <p className="text-base text-gray-600 font-medium max-w-xl">
+                    Crea una cuenta nueva en MED 24 para accder a todas las funcionalidades que tenemos para ti.
+                </p>
+            </div>
+
             <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8">
                 <h2 className="text-2xl font-bold text-center mb-6">Crear cuenta</h2>
 
@@ -71,8 +83,7 @@ export default function Register() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* ... (tus inputs de email, password y confirmPassword se quedan igual) ... */}
-                    
+
                     <div className="relative">
                         <RiMailLine className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Input, Textarea } from "./components/Utils";
 
 export default function BecomeDoctor() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function BecomeDoctor() {
   };
 
   const handleSubmit = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/become-doctor`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/become-doctor`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -60,25 +61,6 @@ export default function BecomeDoctor() {
           Convertirme en médico
         </button>
       </div>
-    </div>
-  );
-}
-
-/* reutiliza tus componentes */
-function Input({ label, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-600">{label}</label>
-      <input {...props} className="border rounded-xl px-4 py-2" />
-    </div>
-  );
-}
-
-function Textarea({ label, ...props }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-600">{label}</label>
-      <textarea {...props} rows={3} className="border rounded-xl px-4 py-2" />
     </div>
   );
 }

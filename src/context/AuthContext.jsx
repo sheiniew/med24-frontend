@@ -6,16 +6,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // En tu AuthContext.js
   useEffect(() => {
     const getSession = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/me`, { credentials: "include" });
-        const data = await res.json();
-        if (!data.user && !loading) {
-          setUser(null);
-        } else {
+        const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/me`, {
+          credentials: "include"
+        });
+
+        if (res.ok) {
+          const data = await res.json();
           setUser(data.user);
+        } else {
+          setUser(null);
         }
       } catch (error) {
         setUser(null);
@@ -27,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const register = async (email, password) => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/register`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -40,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/login`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -57,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/logout`, {
+    await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
