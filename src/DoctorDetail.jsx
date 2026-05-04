@@ -27,7 +27,7 @@ export default function DoctorDetail() {
 
   const fetchRating = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/rating/doctor/${id}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/rating/doctor/${id}`);
       const data = await res.json();
       setDoctorRating(data.average || 0);
     } catch (err) {
@@ -40,8 +40,8 @@ export default function DoctorDetail() {
       setLoading(true);
 
       await Promise.all([
-        fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/${id}`).then(res => res.json()).then(setDoctor),
-        fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/doctor/${id}`).then(res => res.json()).then(setGuides),
+        fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/${id}`).then(res => res.json()).then(setDoctor),
+        fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/doctor/${id}`).then(res => res.json()).then(setGuides),
         fetchRating()
       ]);
       setLoading(false);
@@ -52,7 +52,7 @@ export default function DoctorDetail() {
 
   const handleRate = async (newRating, targetId, type) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/rate`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/rate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

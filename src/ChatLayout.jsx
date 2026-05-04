@@ -13,9 +13,11 @@ export default function ChatLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  console.log(import.meta.env.VITE_API_BACKEND)
+
   const fetchChats = async () => {
     setLoading(true);
-    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/chat`, {
+    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/chat`, {
       credentials: "include",
     });
 
@@ -36,7 +38,7 @@ export default function ChatLayout() {
     setIsDeleting(true)
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_LOCAL}/chat/${chatToDelete}`,
+        `${import.meta.env.VITE_API_BACKEND}/chat/${chatToDelete}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -117,7 +119,7 @@ export default function ChatLayout() {
       </div>
 
       {chatToDelete && (
-        <DeleteModal setElToDelete={setChatToDelete} confirmDelete={deleteChat} elToDelete={chatToDelete} isDeleting={isDeleting}/>
+        <DeleteModal setElToDelete={setChatToDelete} confirmDelete={deleteChat} elToDelete={chatToDelete} isDeleting={isDeleting} />
       )}
     </div>
   );

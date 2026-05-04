@@ -22,12 +22,11 @@ export default function Team() {
   
   const navigate = useNavigate();
 
-  // Especialidades para el filtro rápido
   const specialties = ["Todos", "Cardiología", "Pediatría", "Dermatología", "Ginecología", "Medicina General"];
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_LOCAL}/doctors`)
+    fetch(`${import.meta.env.VITE_API_BACKEND}/doctors`)
       .then(res => res.json())
       .then(data => {
         setDoctors(data);
@@ -37,7 +36,6 @@ export default function Team() {
       .catch(() => setLoading(false));
   }, []);
 
-  // Lógica de filtrado
   useEffect(() => {
     let result = doctors;
 

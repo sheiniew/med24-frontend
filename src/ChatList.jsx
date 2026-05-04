@@ -6,12 +6,13 @@ export default function ChatList() {
     const [chats, setChats] = useState([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_LOCAL}/chat`, {
+        fetch(`${import.meta.env.VITE_API_BACKEND}/chat`, {
             credentials: "include",
         })
             .then((res) => res.json())
             .then(setChats);
     }, []);
+
 
 
     return (

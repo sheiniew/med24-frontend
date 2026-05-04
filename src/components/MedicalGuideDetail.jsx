@@ -14,7 +14,7 @@ export default function MedicalGuideDetail() {
     useEffect(() => {
         const fetchGuide = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/guides/${id}`);
+                const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/guides/${id}`);
                 const data = await res.json();
                 setGuide(data);
             } catch (err) {

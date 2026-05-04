@@ -21,6 +21,8 @@ import MedicalGuideDetail from "./components/MedicalGuideDetail";
 
 function App() {
 
+  console.log(import.meta.env.VITE_API_BACKEND)
+
   return (
     <AuthProvider>
       <Router>
