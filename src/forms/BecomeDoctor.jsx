@@ -22,7 +22,7 @@ export default function BecomeDoctor() {
   };
 
   const handleSubmit = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/become-doctor`, {
+    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/become-doctor`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

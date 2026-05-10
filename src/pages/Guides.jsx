@@ -20,7 +20,7 @@ const MedicalGuides = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/guides`)
+    fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/guides`)
       .then(res => res.json())
       .then(data => {
         const normalized = data.map(g => ({
@@ -36,7 +36,7 @@ const MedicalGuides = () => {
       })
       .catch(() => setLoading(false));
 
-    fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/favorites/ids`, {
+    fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/favorites/ids`, {
       credentials: "include"
     })
       .then(res => res.json())
@@ -67,7 +67,7 @@ const MedicalGuides = () => {
 
   const toggleFavorite = async (id) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/favorites/toggle`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/favorites/toggle`, {
         method: "POST",
         credentials: "include",
         headers: {

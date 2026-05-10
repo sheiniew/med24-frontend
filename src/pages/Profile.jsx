@@ -18,7 +18,7 @@ export default function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_LOCAL}/auth/profile`, {
+    fetch(`${import.meta.env.VITE_API_BACKEND}/auth/profile`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -34,7 +34,7 @@ export default function Profile() {
   }, []);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_LOCAL}/auth/me`, {
+    fetch(`${import.meta.env.VITE_API_BACKEND}/auth/me`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -43,14 +43,14 @@ export default function Profile() {
           setIsDoctor(true);
           setView("doctor");
 
-          const resDoctor = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/me`, {
+          const resDoctor = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/me`, {
             credentials: "include",
           });
 
           const doctor = await resDoctor.json();
           setDoctorData(doctor);
 
-          const resGuides = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/doctor/${doctor.id}`);
+          const resGuides = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/doctor/${doctor.id}`);
           const guidesData = await resGuides.json();
 
           setGuides(guidesData || []);
@@ -78,7 +78,7 @@ export default function Profile() {
   const handleSave = async () => {
     setLoading(true);
 
-    await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/profile`, {
+    await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/profile`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -89,7 +89,7 @@ export default function Profile() {
   };
 
   const handleSaveDoctor = async () => {
-    await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/me`, {
+    await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/me`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

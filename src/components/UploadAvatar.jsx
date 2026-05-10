@@ -44,7 +44,7 @@ function UploadAvatar({ profile, setProfile }) {
             formData.append("avatar", croppedBlob, "avatar.jpg");
 
             const res = await fetch(
-                `${import.meta.env.VITE_API_LOCAL}/auth/upload-avatar`,
+                `${import.meta.env.VITE_API_BACKEND}/auth/upload-avatar`,
                 {
                     method: "POST",
                     credentials: "include",
@@ -85,7 +85,7 @@ function UploadAvatar({ profile, setProfile }) {
             setUploading(true);
 
             const res = await fetch(
-                `${import.meta.env.VITE_API_LOCAL}/auth/delete-avatar`,
+                `${import.meta.env.VITE_API_BACKEND}/auth/delete-avatar`,
                 {
                     method: "DELETE",
                     credentials: "include",

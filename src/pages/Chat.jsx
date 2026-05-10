@@ -45,7 +45,7 @@ export default function Chat() {
     setMessages([]);
     setInitialLoading(true);
 
-    fetch(`${import.meta.env.VITE_API_LOCAL}/chat/${chatId}/messages`, {
+    fetch(`${import.meta.env.VITE_API_BACKEND}/chat/${chatId}/messages`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -64,7 +64,7 @@ export default function Chat() {
   }, [messages]);
 
   const createChat = async (firstMessage) => {
-    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/chat/create`, {
+    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/chat/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -109,7 +109,7 @@ export default function Chat() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_LOCAL}/chat/${currentChatId}/message`,
+        `${import.meta.env.VITE_API_BACKEND}/chat/${currentChatId}/message`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

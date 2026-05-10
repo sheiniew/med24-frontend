@@ -52,8 +52,8 @@ export default function CreateGuide({ editingGuide, closeModal, setGuides }) {
   const handleSubmit = async () => {
     const finalData = { ...form, content };
     const url = isEditing
-      ? `${import.meta.env.VITE_API_LOCAL}/doctors/guides/${editingGuide.id}`
-      : `${import.meta.env.VITE_API_LOCAL}/doctors/guides`;
+      ? `${import.meta.env.VITE_API_BACKEND}/doctors/guides/${editingGuide.id}`
+      : `${import.meta.env.VITE_API_BACKEND}/doctors/guides`;
 
     const method = isEditing ? "PUT" : "POST";
 

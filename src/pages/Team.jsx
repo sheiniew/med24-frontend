@@ -26,7 +26,7 @@ export default function Team() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_LOCAL}/doctors`)
+    fetch(`${import.meta.env.VITE_API_BACKEND}/doctors`)
       .then(res => res.json())
       .then(data => {
         setDoctors(data);
