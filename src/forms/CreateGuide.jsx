@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { LuX, LuSave, LuPlus } from "react-icons/lu";
-import { Input, Textarea, DynamicSection } from "./components/Utils";
-import NavBack from "./components/NavBack";
+import { Input, Textarea, DynamicSection } from "../components/Utils";
+import NavBack from "../components/NavBack";
 
 export default function CreateGuide({ editingGuide, closeModal, setGuides }) {
   const isEditing = !!editingGuide;
@@ -52,8 +52,8 @@ export default function CreateGuide({ editingGuide, closeModal, setGuides }) {
   const handleSubmit = async () => {
     const finalData = { ...form, content };
     const url = isEditing
-      ? `${import.meta.env.VITE_API_BACKEND}/doctors/guides/${editingGuide.id}`
-      : `${import.meta.env.VITE_API_BACKEND}/doctors/guides`;
+      ? `${import.meta.env.VITE_API_LOCAL}/doctors/guides/${editingGuide.id}`
+      : `${import.meta.env.VITE_API_LOCAL}/doctors/guides`;
 
     const method = isEditing ? "PUT" : "POST";
 

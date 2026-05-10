@@ -13,13 +13,15 @@ import {
     RiHeart3Line
 } from "react-icons/ri";
 import { useState } from "react";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 
 
 export default function Header() {
 
     const { user, loading, logout } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
+
+    console.log({ user })
 
     return (
         <header className="w-full bg-white shadow-sm border-b border-gray-100 py-3 px-6">
@@ -82,9 +84,17 @@ export default function Header() {
                             <div className="relative">
                                 <button
                                     onClick={() => setMenuOpen(!menuOpen)}
-                                    className="flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-full border-2 border-blue-200 hover:bg-blue-200 transition-all"
+                                    className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-200 shadow-md shadow-blue-100 hover:scale-105 hover:border-blue-300 transition-all duration-200 shrink-0 flex items-center justify-center bg-blue-100"
                                 >
-                                    <RiUserLine size={24} />
+                                    {user.avatar_url ? (
+                                        <img
+                                            src={`${user.avatar_url}?t=${Date.now()}`}
+                                            alt="Avatar"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <RiUserLine size={22} className="text-blue-600" />
+                                    )}
                                 </button>
 
                                 {menuOpen && (

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { LuSearch, LuBot, LuMonitor, LuUserCheck, LuClock, LuShield, LuActivity, LuMicroscope, LuBrain, LuHeart, LuBaby, LuStethoscope, LuLink } from 'react-icons/lu'
 import { Link } from 'react-router-dom';
-import ChatShortcut from './components/ChatShortcut';
+import ChatShortcut from './ChatShortcut';
 
 const Services = () => {
     const [searchTerm, setSearchTerm] = useState("");

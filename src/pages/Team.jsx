@@ -10,8 +10,8 @@ import {
   RiTimerFlashLine,
   RiMapPinLine
 } from "react-icons/ri";
-import { SkeletonGridCards } from "./components/Skeleton";
-import ChatShortcut from "./components/ChatShortcut";
+import { SkeletonGridCards } from "../components/Skeleton";
+import ChatShortcut from "../components/ChatShortcut";
 
 export default function Team() {
   const [doctors, setDoctors] = useState([]);
@@ -19,14 +19,14 @@ export default function Team() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSpecialty, setActiveSpecialty] = useState("Todos");
-  
+
   const navigate = useNavigate();
 
   const specialties = ["Todos", "Cardiología", "Pediatría", "Dermatología", "Ginecología", "Medicina General"];
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_BACKEND}/doctors`)
+    fetch(`${import.meta.env.VITE_API_LOCAL}/doctors`)
       .then(res => res.json())
       .then(data => {
         setDoctors(data);
@@ -53,6 +53,8 @@ export default function Team() {
     setFilteredDoctors(result);
   }, [searchTerm, activeSpecialty, doctors]);
 
+  console.log({ doctors })
+
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
       <header className="bg-white border-b border-gray-200 py-12 mb-12">
@@ -70,10 +72,10 @@ export default function Team() {
       <main className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {[
-            { t: "Certificados", d: "Especialistas avalados internacionalmente.", i: <RiMedalLine size={28}/> },
-            { t: "Empatía", d: "Atención centrada en el bienestar humano.", i: <RiUserHeartLine size={28}/> },
-            { t: "Disponibilidad", d: "Consulta con nuestro agente de IA y expertos cuando sea.", i: <RiTimerFlashLine size={28}/> },
-            { t: "Cercanía", d: "Consultorios equipados cerca de ti.", i: <RiMapPinLine size={28}/> }
+            { t: "Certificados", d: "Especialistas avalados internacionalmente.", i: <RiMedalLine size={28} /> },
+            { t: "Empatía", d: "Atención centrada en el bienestar humano.", i: <RiUserHeartLine size={28} /> },
+            { t: "Disponibilidad", d: "Consulta con nuestro agente de IA y expertos cuando sea.", i: <RiTimerFlashLine size={28} /> },
+            { t: "Cercanía", d: "Consultorios equipados cerca de ti.", i: <RiMapPinLine size={28} /> }
           ].map((item, idx) => (
             <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group hover:shadow-md transition-all">
               <div className="text-blue-600 mb-4 transform group-hover:scale-110 transition-transform">
@@ -95,17 +97,16 @@ export default function Team() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar">
             {specialties.map(spec => (
               <button
                 key={spec}
                 onClick={() => setActiveSpecialty(spec)}
-                className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${
-                  activeSpecialty === spec 
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-200" 
+                className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${activeSpecialty === spec
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-200"
                   : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
-                }`}
+                  }`}
               >
                 {spec}
               </button>
@@ -126,8 +127,18 @@ export default function Team() {
                 >
                   <div className="p-6 flex-grow">
                     <div className="flex justify-between items-start mb-4">
-                      <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl font-black group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                        {doc.profiles?.full_name?.charAt(0) || "D"}
+                      <div className="w-24 h-24 rounded-3xl overflow-hidden shadow-xl shadow-blue-100 border-4 border-white bg-slate-100">
+                        {doc?.profiles?.avatar_url ? (
+                          <img
+                            src={`${doc.profiles?.avatar_url}?t=${Date.now()}`}
+                            alt="Avatar"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold">
+                            {doc.profiles?.full_name?.charAt(0) || "U"}
+                          </div>
+                        )}
                       </div>
                       <div className="flex items-center gap-1 bg-yellow-50 px-2.5 py-1 rounded-lg">
                         <RiStarFill className="text-yellow-500" size={14} />
@@ -143,7 +154,7 @@ export default function Team() {
                     <span className="text-[10px] uppercase tracking-widest font-black text-blue-500 mb-3 block">
                       {doc.specialty}
                     </span>
-                    
+
                     <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2 font-medium">
                       {doc.bio || "Especialista comprometido con la salud y el bienestar de sus pacientes."}
                     </p>
@@ -167,8 +178,8 @@ export default function Team() {
               <div className="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-gray-200">
                 <RiSearchLine size={48} className="mx-auto text-gray-300 mb-4" />
                 <p className="text-gray-400 text-lg font-bold">No encontramos médicos en esta categoría.</p>
-                <button 
-                  onClick={() => {setActiveSpecialty("Todos"); setSearchTerm("");}}
+                <button
+                  onClick={() => { setActiveSpecialty("Todos"); setSearchTerm(""); }}
                   className="mt-4 text-blue-600 font-bold hover:underline"
                 >
                   Limpiar filtros

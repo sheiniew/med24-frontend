@@ -9,11 +9,11 @@ import {
   RiStarFill,
   RiMedalLine, RiAwardLine
 } from "react-icons/ri";
-import { SkeletonDoctorDetail } from "./components/Skeleton";
-import { StarRating } from "./components/StarRating";
+import { SkeletonDoctorDetail } from "../components/Skeleton";
+import { StarRating } from "../components/StarRating";
 import { useNavigate } from "react-router-dom";
-import NavBack from "./components/NavBack";
-import { useAuth } from "./context/AuthContext";
+import NavBack from "../components/NavBack";
+import { useAuth } from "../context/AuthContext";
 
 export default function DoctorDetail() {
   const { id } = useParams();
@@ -27,7 +27,7 @@ export default function DoctorDetail() {
 
   const fetchRating = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/rating/doctor/${id}`);
+      const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/rating/doctor/${id}`);
       const data = await res.json();
       setDoctorRating(data.average || 0);
     } catch (err) {
@@ -40,8 +40,8 @@ export default function DoctorDetail() {
       setLoading(true);
 
       await Promise.all([
-        fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/${id}`).then(res => res.json()).then(setDoctor),
-        fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/doctor/${id}`).then(res => res.json()).then(setGuides),
+        fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/${id}`).then(res => res.json()).then(setDoctor),
+        fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/doctor/${id}`).then(res => res.json()).then(setGuides),
         fetchRating()
       ]);
       setLoading(false);
@@ -52,7 +52,7 @@ export default function DoctorDetail() {
 
   const handleRate = async (newRating, targetId, type) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/rate`, {
+      const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/rate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -84,8 +84,18 @@ export default function DoctorDetail() {
         <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full opacity-50" />
           <div className="relative flex flex-col md:flex-row gap-8 items-start">
-            <div className="w-24 h-24 bg-blue-600 text-white rounded-3xl flex items-center justify-center text-3xl font-black shadow-xl shadow-blue-100 shrink-0">
-              {doctor?.profiles?.full_name?.charAt(0) || "D"}
+            <div className="w-24 h-24 rounded-3xl overflow-hidden shadow-xl shadow-blue-100 border-4 border-white bg-slate-100">
+              {doctor.profiles?.avatar_url ? (
+                <img
+                  src={`${doctor.profiles?.avatar_url}?t=${Date.now()}`}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold">
+                  {doctor.profiles?.full_name?.charAt(0) || "U"}
+                </div>
+              )}
             </div>
 
             <div className="flex-1">

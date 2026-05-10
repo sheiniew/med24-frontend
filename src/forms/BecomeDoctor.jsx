@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Textarea } from "./components/Utils";
+import { Input, Textarea } from "../components/Utils";
 
 export default function BecomeDoctor() {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function BecomeDoctor() {
   };
 
   const handleSubmit = async () => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/become-doctor`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/become-doctor`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

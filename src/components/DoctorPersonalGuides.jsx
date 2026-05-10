@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LuTrash, LuPencil } from "react-icons/lu";
 import DeleteModal from "./DeleteModal";
-import CreateGuide from "../CreateGuide";
+import CreateGuide from "../forms/CreateGuide";
 
 export default function DoctorPersonalGuides({ guides, setGuides }) {
   const [guideToDelete, setGuideToDelete] = useState(null);
@@ -12,7 +12,7 @@ export default function DoctorPersonalGuides({ guides, setGuides }) {
     if (!guideToDelete) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/guides/${guideToDelete.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/guides/${guideToDelete.id}`, {
         method: "DELETE",
         credentials: "include",
       });

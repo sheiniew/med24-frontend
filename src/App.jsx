@@ -1,27 +1,25 @@
-import Chat from "./Chat"
-import Header from "./Header"
+import Chat from "./pages/Chat"
+import Header from "./components/Header"
 import Login from "./forms/Login"
-import Home from "./Home"
+import Home from "./components/Home"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Footer from "./Footer"
+import Footer from "./components/Footer"
 import Register from "./forms/Register"
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./ProtectedRoute";
-import PublicRoute from "./PublicRoute";
-import ChatLayout from "./ChatLayout";
-import Profile from "./Profile";
-import CreateGuide from "./CreateGuide";
-import BecomeDoctor from "./BecomeDoctor";
-import MedicalGuides from "./Guides";
-import Team from "./Team"
-import DoctorDetail from "./DoctorDetail";
-import Favorites from "./Favorites";
-import Services from "./Services";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+import ChatLayout from "./pages/ChatLayout";
+import Profile from "./pages/Profile";
+import CreateGuide from "./forms/CreateGuide";
+import BecomeDoctor from "./forms/BecomeDoctor";
+import MedicalGuides from "./pages/Guides";
+import Team from "./pages/Team"
+import DoctorDetail from "./pages/DoctorDetail";
+import Favorites from "./pages/Favorites";
+import Services from "./components/Services";
 import MedicalGuideDetail from "./components/MedicalGuideDetail";
 
 function App() {
-
-  console.log(import.meta.env.VITE_API_BACKEND)
 
   return (
     <AuthProvider>

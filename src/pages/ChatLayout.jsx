@@ -1,8 +1,8 @@
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { SkeletonChatSidebar } from "./components/Skeleton";
-import DeleteModal from "./components/DeleteModal"
+import { SkeletonChatSidebar } from "../components/Skeleton";
+import DeleteModal from "../components/DeleteModal"
 
 export default function ChatLayout() {
   const [chats, setChats] = useState([]);
@@ -13,11 +13,11 @@ export default function ChatLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(import.meta.env.VITE_API_BACKEND)
+  console.log(import.meta.env.VITE_API_LOCAL)
 
   const fetchChats = async () => {
     setLoading(true);
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/chat`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/chat`, {
       credentials: "include",
     });
 
@@ -38,7 +38,7 @@ export default function ChatLayout() {
     setIsDeleting(true)
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BACKEND}/chat/${chatToDelete}`,
+        `${import.meta.env.VITE_API_LOCAL}/chat/${chatToDelete}`,
         {
           method: "DELETE",
           credentials: "include",

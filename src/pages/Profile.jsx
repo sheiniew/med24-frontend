@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuTrash } from "react-icons/lu";
-import DoctorPersonalGuides from "./components/DoctorPersonalGuides";
-import { Textarea, Input } from "./components/Utils";
+import DoctorPersonalGuides from "../components/DoctorPersonalGuides";
+import { Textarea, Input } from "../components/Utils";
 import { LuUser, LuStethoscope, LuShield, LuHeart, LuPhone, LuPlus, LuSave, LuMedal, LuCircleCheck } from "react-icons/lu";
+import UploadAvatar from "../components/UploadAvatar";
 
 export default function Profile() {
   const [profile, setProfile] = useState({});
@@ -17,18 +18,23 @@ export default function Profile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BACKEND}/auth/profile`, {
+    fetch(`${import.meta.env.VITE_API_LOCAL}/auth/profile`, {
       credentials: "include",
     })
       .then(res => res.json())
       .then(data => {
-        setProfile(data);
+        setProfile({
+          ...data,
+          avatar_url: data.avatar_url
+            ? `${data.avatar_url}?v=${Date.now()}`
+            : null
+        });
         setInitialLoading(false);
       });
   }, []);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BACKEND}/auth/me`, {
+    fetch(`${import.meta.env.VITE_API_LOCAL}/auth/me`, {
       credentials: "include",
     })
       .then(res => res.json())
@@ -37,14 +43,14 @@ export default function Profile() {
           setIsDoctor(true);
           setView("doctor");
 
-          const resDoctor = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/me`, {
+          const resDoctor = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/me`, {
             credentials: "include",
           });
 
           const doctor = await resDoctor.json();
           setDoctorData(doctor);
 
-          const resGuides = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/doctor/${doctor.id}`);
+          const resGuides = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/doctor/${doctor.id}`);
           const guidesData = await resGuides.json();
 
           setGuides(guidesData || []);
@@ -72,7 +78,7 @@ export default function Profile() {
   const handleSave = async () => {
     setLoading(true);
 
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/profile`, {
+    await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/profile`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -83,7 +89,7 @@ export default function Profile() {
   };
 
   const handleSaveDoctor = async () => {
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/me`, {
+    await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/me`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -129,11 +135,9 @@ export default function Profile() {
         <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 rounded-bl-full opacity-40 -z-0" />
 
-          <div className="w-24 h-24 rounded-3xl bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold shadow-xl shadow-blue-100 z-10 shrink-0">
-            {profile.full_name?.charAt(0) || "U"}
-          </div>
+          <UploadAvatar profile={profile} setProfile={setProfile} />
 
-          <div className="text-center md:text-left z-10">
+          <div className="text-center md:text-left">
             <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
               {profile.full_name || "Tu Perfil"}
             </h2>

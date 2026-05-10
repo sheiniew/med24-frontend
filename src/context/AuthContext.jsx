@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const getSession = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/me`, {
+        const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/me`, {
           credentials: "include"
         });
 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const register = async (email, password) => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/register`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/login`, {
+    const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await fetch(`${import.meta.env.VITE_API_BACKEND}/auth/logout`, {
+    await fetch(`${import.meta.env.VITE_API_LOCAL}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, loading, register, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

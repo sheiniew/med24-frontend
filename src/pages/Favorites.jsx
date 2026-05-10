@@ -4,10 +4,10 @@ import {
     LuActivity, LuInfo, LuHouse, LuCircleAlert, LuShieldCheck, LuSearch
 } from "react-icons/lu";
 import { Link } from 'react-router-dom';
-import ModalGuideDetail from './components/MedicalGuideDetail';
-import { getUrgencyColor, getUrgencyText } from './components/Utils';
-import { SkeletonFavoriteItem } from './components/Skeleton';
-import NavBack from './components/NavBack';
+import ModalGuideDetail from '../components/MedicalGuideDetail';
+import { getUrgencyColor, getUrgencyText } from '../components/Utils';
+import { SkeletonFavoriteItem } from '../components/Skeleton';
+import NavBack from '../components/NavBack';
 import { useNavigate } from 'react-router-dom';
 
 const Favorites = () => {
@@ -19,7 +19,7 @@ const Favorites = () => {
     const fetchFavorites = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/favorites/details`, {
+            const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/favorites/details`, {
                 credentials: "include"
             });
             const data = await res.json();
@@ -51,7 +51,7 @@ const Favorites = () => {
     const removeFavorite = async (e, guideId) => {
         e.stopPropagation();
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_BACKEND}/doctors/favorites/toggle`, {
+            const res = await fetch(`${import.meta.env.VITE_API_LOCAL}/doctors/favorites/toggle`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

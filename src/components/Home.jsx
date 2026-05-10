@@ -78,7 +78,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 24/7 Attention Section */}
       <section className="bg-red-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-6">
